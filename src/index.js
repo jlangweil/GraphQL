@@ -1,12 +1,13 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
+import dotenv from 'dotenv';
 import pg from 'pg';
 import typeDefs from './typeDefs.js';
 
+dotenv.config();
 const { Pool } = pg;
 
-// Your connection string
-const connectionString = 'postgres://jlangweil:LtUSpT3miV51jF2yBuA6DJxBs4HUMpfB@dpg-cgds0m82qv2bbhle9s3g-a.ohio-postgres.render.com/morristownmovies';
+const connectionString = process.env.PG_CONNECTION_STRING;
 
 const pool = new Pool({
   connectionString: connectionString,
@@ -73,7 +74,7 @@ const server = new ApolloServer({
   });
 
 const { url } = await startStandaloneServer(server, {
-    listen: { port: 4000 },
+    listen: { port: 4040 },
   });
   
   console.log(`🚀  Server ready at: ${url}`);
