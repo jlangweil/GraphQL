@@ -28,7 +28,6 @@ const resolvers = {
     Query: {
         restaurants: async () => {
             const result = await pool.query('SELECT * FROM restaurants');
-
             return result.rows.map(row => ({
             id: row.id,
             RestaurantName: row.RestaurantName,  
@@ -63,7 +62,23 @@ const resolvers = {
                 Rating: row.Rating            
                 }));
         },
-    }
+    },
+    Restaurant: { 
+      // 'Restaurant' type resolver
+      restaurantreviews: async (parent) => {
+          // Here 'parent' contains the details of the restaurant
+          // Thus, we can use parent.id (or similar field) to fetch reviews for this restaurant
+          const reviewsResult = await pool.query(`select r.id, r."RestaurantID", r."ReviewText", TO_CHAR(r."ReviewDate", 'MM/DD/YYYY') as "ReviewDate", r."Rating" from restaurantreviews r WHERE "RestaurantID" = $1`, [parent.id]);
+          return reviewsResult.rows.map(row => ({
+              id: row.id,
+              RestaurantID: row.RestaurantID,  
+              UserID: row.UserID,  
+              ReviewText: row.ReviewText,               
+              ReviewDate: row.ReviewDate,         
+              Rating: row.Rating            
+          }));
+      }
+  }
 }
       
 
